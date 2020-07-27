@@ -1,0 +1,24 @@
+
+pipeline {
+    options {
+    buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+    }
+    agent any 
+    triggers { pollSCM('H/5 * * * *') }
+    stages {
+        stage('Build') { 
+            steps {
+                echo "Build"
+                sh 'chmod +x buildScripts/build.sh'
+                sh('buildScripts/build.sh')
+            }
+        }
+        stage('Deploy') { 
+            steps {
+                echo "Deploy"
+                sh 'chmod +x buildScripts/deploy.sh'
+                sh('buildScripts/deploy.sh')
+            }
+        }
+    }
+}
